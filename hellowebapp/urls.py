@@ -1,37 +1,19 @@
-"""hellowebapp URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.conf.urls import url, include
 from django.contrib import admin
-from django.urls import path
 from django.views.generic import TemplateView
 
 from collection import views
 
+
 urlpatterns = [
-    path('', views.index, name='home'),
-    
-# The new URL entries we're adding: 
-    path('about/', 
-
-TemplateView.as_view( template_name ='about.html'), 
-    name ='about'), 
-    path('contact/', 
-
-TemplateView.as_view( template_name ='contact.html'), 
-        name ='contact'),
-    path('things/<slug>/', views.thing_detail,
-        name ='thing_detail'),
-    path('admin/', admin.site.urls),
+    url(r'^$', views.index, name='home'),
+    url(r'^about/$',
+        TemplateView.as_view(template_name='about.html'), name='about'),
+    url(r'^contact/$',
+        TemplateView.as_view(template_name='contact.html'), name='contact'),
+    url(r'^things/(?P<slug>[-\w]+)/$', 
+        views.thing_detail, name='thing_detail'),
+    url(r'^things/(?P<slug>[-\w]+)/edit/$', 
+        views.edit_thing, name='edit_thing'),
+    url(r'^admin/', admin.site.urls),
 ]
