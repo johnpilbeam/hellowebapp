@@ -1,19 +1,20 @@
-from django.conf.urls import url, include
 from django.contrib import admin
+from django.urls import path
 from django.views.generic import TemplateView
 
 from collection import views
 
 
 urlpatterns = [
-    url(r'^$', views.index, name='home'),
-    url(r'^about/$',
+    path('', views.index, name='home'),
+    path('about/',
         TemplateView.as_view(template_name='about.html'), name='about'),
-    url(r'^contact/$',
+    path('contact/',
         TemplateView.as_view(template_name='contact.html'), name='contact'),
-    url(r'^things/(?P<slug>[-\w]+)/$', 
+    path('things/(<slug>/', 
         views.thing_detail, name='thing_detail'),
-    url(r'^things/(?P<slug>[-\w]+)/edit/$', 
+    path('things/<slug>/edit/', 
         views.edit_thing, name='edit_thing'),
-    url(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
+#    path('accounts/', registration.backends.simple.paths),
 ]
