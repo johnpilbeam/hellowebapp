@@ -1,8 +1,10 @@
+from django.template.defaultfilters import slugify
 from django.shortcuts import render, redirect
 
 from collection.forms import ThingForm
 from collection.models import Thing
-
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 # the rewritten view!
 def index(request):
@@ -21,10 +23,13 @@ def thing_detail(request, slug):
         'thing': thing,
     })
 
-
+@login_required
 def edit_thing(request, slug):
     # grab the object...
     thing = Thing.objects.get(slug=slug)
+
+    if thing.user != request.user:
+        raise Http404
 
     # set the form we're using...
     form_class = ThingForm
@@ -48,3 +53,21 @@ def edit_thing(request, slug):
         'thing': thing,
         'form': form,
     })
+    
+def create_thing(request):
+	form_class = ThingForm
+	if request.method == 'POST':
+	    form = form_class(request.POST)
+	if form.is_valid():
+		thing = form.save(commit=False)
+		thing.user = request.user
+		thing.slug = slugify(thing.name)
+		thing.save()
+		return redirect('thing_detail', slug=thing.slug)
+	else:
+		form = form_class()
+
+	return render(request, 'things/create_thing.html', {
+        'form': form,
+    })
+		    
