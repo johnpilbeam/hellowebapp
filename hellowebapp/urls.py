@@ -1,7 +1,7 @@
 from collection.backends import MyRegistrationView
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 
 from django.contrib.auth.views import (
 	password_reset,
@@ -47,7 +47,15 @@ urlpatterns = [
 	    name ='registration_register'),
 	path('accounts/create_thing/', views.create_thing,
 	    name ='registration_create_thing'),
+	path('browse/name/',
+	    views.browse_by_name, name='browse'),
+    path('browse/', RedirectView.as_view(
+        pattern_name='browse', permanent=True)),
+    path('things/', RedirectView.as_view(
+        pattern_name='browse', permanent=True)),
+    path('browse/name/<initial>/',
+	    views.browse_by_name, name='browse_by_name'),    
     path('accounts/', include('registration.backends.simple.urls')),
     path('admin/', admin.site.urls),
 ]
-  
+
