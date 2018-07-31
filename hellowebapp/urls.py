@@ -1,3 +1,4 @@
+from django.contrib.sitemaps.views import sitemap 
 from collection.backends import MyRegistrationView
 from django.contrib import admin
 from django.urls import path, include
@@ -11,6 +12,13 @@ from django.contrib.auth.views import (
 )
 
 from collection import views
+from collection.sitemap import ThingSitemap, StaticSitemap, HomepageSitemap
+
+sitemaps = {
+    'things': ThingSitemap, 
+    'static': StaticSitemap, 
+    'homepage': HomepageSitemap,
+}
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -53,6 +61,8 @@ urlpatterns = [
         pattern_name='browse', permanent=True)),
     path('browse/name/<initial>/',
 	    views.browse_by_name, name='browse_by_name'),    
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, 
+        name='django.contrib.sitemaps.views.sitemap'),
     path('accounts/', include('registration.backends.simple.urls')),
     path('admin/', admin.site.urls),
 ]

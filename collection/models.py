@@ -2,14 +2,25 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
-class Thing(models.Model): 
-	name = models.CharField(max_length = 255) 
-	description = models.TextField() 
-	slug = models.SlugField(unique = True)
-	user = models.OneToOneField(User, on_delete=models.CASCADE,
-	    blank=True, null = True)
+class Timestamp(models.Model):
+    created = models.DateTimeField(auto_now_add=True) 
+    updated = models.DateTimeField(auto_now=True)
 
-	    
+    class Meta: 
+        abstract = True
+
+class Thing(Timestamp): 
+    name = models.CharField(max_length = 255) 
+    description = models.TextField() 
+    slug = models.SlugField(unique = True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+        blank=True, null = True)
+
+    # new helper method
+    def get_absolute_url(self):
+        return "/things/%s/" % self.slug
+
+
 class Social(models.Model):
     SOCIAL_TYPES = (
         ('twitter', 'Twitter'),
